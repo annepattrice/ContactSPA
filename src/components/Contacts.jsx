@@ -1,11 +1,12 @@
 import React from "react";
 import "./contacts.scss";
+import Contact from "./Contact";
 
-class Contacts extends React.Component {
-  render() {
-    return (
-      <article className="contact" data-testid="contacts">
-        <span className="contact__avatar"></span>
+const Contacts = ({ contacts }) => (
+  <div className="container" data-testid="contacts">
+    <section className="contacts">
+      <article className="contact">
+        <span className="contact__avatar" />
         <span className="contact__data">Nome</span>
         <span className="contact__data">Telefone</span>
         <span className="contact__data">País</span>
@@ -13,8 +14,10 @@ class Contacts extends React.Component {
         <span className="contact__data">Empresa</span>
         <span className="contact__data">Departamento</span>
       </article>
-    );
-  }
-}
+      {contacts &&
+        contacts.map((contact) => <Contact key={contact.id} {...contact} />)}
+    </section>
+  </div>
+);
 
 export default Contacts;

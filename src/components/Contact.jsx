@@ -1,25 +1,27 @@
 import React from "react";
 import "./contact.scss";
 
-const Contact = (props) => {
+const Contact = ({
+  name,
+  avatar,
+  company,
+  department,
+  admissionDate,
+  phone,
+  country,
+}) => {
   return (
-    <>
-      {props.contacts.map((contact) => {
-        return (
-          <article key={contact.id} className="contact" data-testid="contact">
-            <span className="contact__avatar">
-              <img src={contact.avatar} alt={contact.name} />
-            </span>
-            <span className="contact__data">{contact.name}</span>
-            <span className="contact__data">{contact.phone}</span>
-            <span className="contact__data">{contact.country}</span>
-            <span className="contact__data">{contact.admissonDate}</span>
-            <span className="contact__data">{contact.company}</span>
-            <span className="contact__data">{contact.department}</span>
-          </article>
-        );
-      })}
-    </>
+    <article className="contact" data-testid="contact">
+      <span className="contact__avatar">
+        <img src={avatar} alt={name} />
+      </span>
+      <span className="contact__data">{name}</span>
+      <span className="contact__data">{phone}</span>
+      <span className="contact__data">{country}</span>
+      <span className="contact__data">{admissionDate}</span>
+      <span className="contact__data">{company}</span>
+      <span className="contact__data">{department}</span>
+    </article>
   );
 };
 
