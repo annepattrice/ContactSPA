@@ -4,7 +4,7 @@ import "./contacts.scss";
 class Contacts extends React.Component {
   render() {
     return (
-      <article className="contact" data-testid="contact">
+      <article className="contact" data-testid="contacts">
         <span className="contact__avatar"></span>
         <span className="contact__data">Nome</span>
         <span className="contact__data">Telefone</span>
