@@ -1,32 +1,32 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { Component } from "react";
 import "./filters.scss";
 
-const initialSortSelected = "";
+class Filters extends Component {
+  state = {
+    search: "",
+    sortSelected: "",
+  };
 
-const Filters = ({ onFilter }) => {
-  const [search, setSearch] = useState("");
-  const [sortSelected, setSortSelected] = useState(initialSortSelected);
+  componentDidUpdate(_, prevState) {
+    if (this.state.sortSelected !== prevState.sortSelected) {
+      const name = this.state.sortSelected;
 
-  const _onFilter = useCallback(onFilter, []);
+      let compareFilter = (a, b) => {
+        const x = typeof a[name] === "string" ? a[name].toLowerCase() : a[name];
+        const y = typeof b[name] === "string" ? b[name].toLowerCase() : b[name];
 
-  useEffect(() => {
-    const name = sortSelected;
+        return x < y ? -1 : x > y ? 1 : 0;
+      };
 
-    let compareFilter = (a, b) => {
-      const x = typeof a[name] === "string" ? a[name].toLowerCase() : a[name];
-      const y = typeof b[name] === "string" ? b[name].toLowerCase() : b[name];
+      if (name === "") {
+        compareFilter = () => 0;
+      }
 
-      return x < y ? -1 : x > y ? 1 : 0;
-    };
-
-    if (name === "") {
-      compareFilter = () => 0;
+      this.props.onFilter(compareFilter, "sort");
     }
+  }
 
-    _onFilter(compareFilter, "sort");
-  }, [sortSelected, _onFilter]);
-
-  function handleSearch(e) {
+  handleSearch = (e) => {
     const currentValue = e.target.value;
 
     let searchFilter = (contact) =>
@@ -36,90 +36,100 @@ const Filters = ({ onFilter }) => {
       searchFilter = (v) => v;
     }
 
-    setSearch(currentValue);
-    _onFilter(searchFilter, "search");
-  }
+    this.setState({ search: currentValue });
 
-  function handleSort(e) {
+    this.props.onFilter(searchFilter, "search");
+  };
+
+  handleSort = (e) => {
     const {
       target: { name },
     } = e;
 
-    setSortSelected((prevName) => {
-      if (prevName === name) {
-        return initialSortSelected;
+    this.setState((prevState) => {
+      let sortSelected = name;
+
+      if (prevState.sortSelected === name) {
+        sortSelected = "";
       }
 
-      return name;
+      return {
+        ...prevState,
+        sortSelected,
+      };
     });
-  }
+  };
 
-  return (
-    <div className="container" data-testid="filters">
-      <section className="filters">
-        <div className="filters__search">
-          <input
-            type="text"
-            className="filters__search__input"
-            placeholder="Pesquisar"
-            value={search}
-            onChange={handleSearch}
-          />
-          <button className="filters__search__icon">
-            <i className="fa fa-search" />
+  render() {
+    const { search, sortSelected } = this.state;
+
+    return (
+      <div className="container" data-testid="filters">
+        <section className="filters">
+          <div className="filters__search">
+            <input
+              type="text"
+              className="filters__search__input"
+              placeholder="Pesquisar"
+              value={search}
+              onChange={this.handleSearch}
+            />
+            <button className="filters__search__icon">
+              <i className="fa fa-search" />
+            </button>
+          </div>
+          <button
+            className={`filters__item ${
+              sortSelected === "name" ? "is-selected" : ""
+            }`}
+            name="name"
+            onClick={this.handleSort}
+          >
+            Nome <i className="fas fa-sort-down" />
           </button>
-        </div>
-        <button
-          className={`filters__item ${
-            sortSelected === "name" ? "is-selected" : ""
-          }`}
-          name="name"
-          onClick={handleSort}
-        >
-          Nome <i className="fas fa-sort-down" />
-        </button>
 
-        <button
-          className={`filters__item ${
-            sortSelected === "country" ? "is-selected" : ""
-          }`}
-          name="country"
-          onClick={handleSort}
-        >
-          País <i className="fas fa-sort-down" />
-        </button>
+          <button
+            className={`filters__item ${
+              sortSelected === "country" ? "is-selected" : ""
+            }`}
+            name="country"
+            onClick={this.handleSort}
+          >
+            País <i className="fas fa-sort-down" />
+          </button>
 
-        <button
-          className={`filters__item ${
-            sortSelected === "company" ? "is-selected" : ""
-          }`}
-          name="company"
-          onClick={handleSort}
-        >
-          Empresa <i className="fas fa-sort-down" />
-        </button>
+          <button
+            className={`filters__item ${
+              sortSelected === "company" ? "is-selected" : ""
+            }`}
+            name="company"
+            onClick={this.handleSort}
+          >
+            Empresa <i className="fas fa-sort-down" />
+          </button>
 
-        <button
-          className={`filters__item ${
-            sortSelected === "department" ? "is-selected" : ""
-          }`}
-          name="department"
-          onClick={handleSort}
-        >
-          Departamento <i className="fas fa-sort-down" />
-        </button>
+          <button
+            className={`filters__item ${
+              sortSelected === "department" ? "is-selected" : ""
+            }`}
+            name="department"
+            onClick={this.handleSort}
+          >
+            Departamento <i className="fas fa-sort-down" />
+          </button>
 
-        <button
-          className={`filters__item ${
-            sortSelected === "admissionDate" ? "is-selected" : ""
-          }`}
-          name="admissionDate"
-          onClick={handleSort}
-        >
-          Data de admissão <i className="fas fa-sort-down" />
-        </button>
-      </section>
-    </div>
-  );
-};
+          <button
+            className={`filters__item ${
+              sortSelected === "admissionDate" ? "is-selected" : ""
+            }`}
+            name="admissionDate"
+            onClick={this.handleSort}
+          >
+            Data de admissão <i className="fas fa-sort-down" />
+          </button>
+        </section>
+      </div>
+    );
+  }
+}
 export default Filters;
